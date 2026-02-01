@@ -39,8 +39,8 @@
         .buttons {
             position: relative;
             width: 100%;
-            max-width: 320px;
-            height: 160px;
+            max-width: 340px;
+            height: 200px;
         }
 
         button {
@@ -48,14 +48,14 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            padding: 14px 36px;
-            transition: transform 0.15s ease;
+            transition: 0.2s ease;
         }
 
         #yesBtn {
             background-color: #ff4d6d;
             color: white;
             font-size: 20px;
+            padding: 15px 40px;
             left: 50%;
             top: 10px;
             transform: translateX(-60%);
@@ -65,25 +65,13 @@
             background-color: #adb5bd;
             color: white;
             font-size: 16px;
+            padding: 10px 28px;
             left: 50%;
-            top: 80px;
+            top: 90px;
             transform: translateX(-40%);
         }
 
-        /* Shake animation */
-        .shake {
-            animation: shake 0.4s;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(-40%) translateX(0); }
-            25% { transform: translateX(-40%) translateX(-6px); }
-            50% { transform: translateX(-40%) translateX(6px); }
-            75% { transform: translateX(-40%) translateX(-4px); }
-            100% { transform: translateX(-40%) translateX(0); }
-        }
-
-        /* Hearts */
+        /* Floating hearts */
         .heart {
             position: fixed;
             bottom: -20px;
@@ -124,7 +112,7 @@
     <img src="https://i.imgur.com/6xKQxjU.png" alt="Love">
     <h1>Devi, will you be my Valentine? 💖</h1>
 
-    <div class="buttons">
+    <div class="buttons" id="btnContainer">
         <button id="yesBtn">Yes 💘</button>
         <button id="noBtn">No 😢</button>
     </div>
@@ -145,8 +133,9 @@
         setTimeout(() => heart.remove(), 6000);
     }, 600);
 
-    /* No button logic */
+    /* No button logic (jump but stay inside container) */
     const noBtn = document.getElementById("noBtn");
+    const container = document.getElementById("btnContainer");
     let attempts = 0;
     let noUnlocked = false;
 
@@ -158,27 +147,35 @@
         "Devi pls 😭",
         "This hurts 🥺",
         "Still no? 😵",
-        "Last chance 😶",
-        "Okay… one more 😬",
-        "Fine 😐"
+        "Almost there 😬",
+        "Last chance 😐",
+        "Okay click me 😞"
     ];
 
-    noBtn.addEventListener("mouseover", () => {
+    function moveNo() {
         if (noUnlocked) return;
 
         attempts++;
         noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
 
-        noBtn.classList.remove("shake");
-        void noBtn.offsetWidth; // restart animation
-        noBtn.classList.add("shake");
+        const containerRect = container.getBoundingClientRect();
+        const maxX = containerRect.width - noBtn.offsetWidth;
+        const maxY = containerRect.height - noBtn.offsetHeight;
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
 
         if (attempts >= 10) {
             noUnlocked = true;
-            noBtn.innerText = "Okay click me 🙈";
             noBtn.style.backgroundColor = "#ffb703";
         }
-    });
+    }
+
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
 
     noBtn.addEventListener("click", () => {
         if (!noUnlocked) return;
