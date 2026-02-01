@@ -1,229 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Devi ❤️</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Devi ❤️</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #ffe6eb, #fff0f5);
-            overflow: hidden;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffe6eb, #fff0f5);
+    overflow: hidden;
+}
 
-        .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
 
-        img {
-            width: 70%;
-            max-width: 300px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-        }
+img {
+    width: 70%;
+    max-width: 300px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
 
-        h1 {
-            color: #d6336c;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-        }
+h1 {
+    color: #d6336c;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
 
-        .buttons {
-            position: relative;
-            width: 100%;
-            max-width: 340px;
-            height: 200px;
-        }
+/* YES BUTTON */
+#yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+    font-size: 20px;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
 
-        button {
-            position: absolute;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.25s ease;
-        }
+/* NO BUTTON — FIXED POSITION */
+#noBtn {
+    position: fixed;
+    background-color: #adb5bd;
+    color: white;
+    font-size: 16px;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
 
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-            font-size: 20px;
-            padding: 15px 40px;
-            left: 50%;
-            top: 10px;
-            transform: translateX(-60%);
-            z-index: 2;
-        }
+/* Floating hearts */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 22px;
+    animation: floatUp 6s linear infinite;
+    opacity: 0.8;
+    pointer-events: none;
+}
 
-        #noBtn {
-            background-color: #adb5bd;
-            color: white;
-            font-size: 16px;
-            padding: 10px 28px;
-            left: 50%;
-            top: 90px;
-            transform: translateX(-40%);
-            z-index: 3;
-        }
+@keyframes floatUp {
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
 
-        /* Floating hearts */
-        .heart {
-            position: fixed;
-            bottom: -20px;
-            font-size: 22px;
-            animation: floatUp 6s linear infinite;
-            opacity: 0.8;
-            pointer-events: none;
-        }
+/* Confetti */
+.confetti {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    animation: fall 3s linear forwards;
+}
 
-        @keyframes floatUp {
-            to {
-                transform: translateY(-110vh);
-                opacity: 0;
-            }
-        }
-
-        /* Confetti */
-        .confetti {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            top: -10px;
-            animation: fall 3s linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-    </style>
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
-    <!-- Local image from same GitHub repo -->
     <img src="image.jpg" alt="Devi ❤️">
-
     <h1>Devi, will you be my Valentine? 💖</h1>
-
-    <div class="buttons">
-        <button id="yesBtn">Yes 💘</button>
-        <button id="noBtn">No 😢</button>
-    </div>
+    <button id="yesBtn">Yes 💘</button>
 </div>
+
+<button id="noBtn">No 😢</button>
 
 <audio id="loveSong">
     <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-    /* Floating hearts */
-    setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerText = "💖";
-        heart.style.left = Math.random() * 100 + "vw";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-    }, 600);
+/* Floating hearts */
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}, 600);
 
-    /* No button logic — LONGER FLEE, SCREEN-BOUNDED */
-    const noBtn = document.getElementById("noBtn");
-    let attempts = 0;
-    let noUnlocked = false;
+/* NO BUTTON LOGIC — PERMANENTLY FIXED */
+const noBtn = document.getElementById("noBtn");
+let attempts = 0;
+let noUnlocked = false;
 
-    const texts = [
-        "Are you sure? 😳",
-        "Think again 🤔",
-        "Please no 😢",
-        "You sure sure? 💔",
-        "Devi pls 😭",
-        "This hurts 🥺",
-        "Still no? 😵",
-        "Almost there 😬",
-        "Last chance 😐",
-        "Okay click me 😞"
-    ];
+const texts = [
+    "Are you sure? 😳",
+    "Think again 🤔",
+    "Please no 😢",
+    "You sure sure? 💔",
+    "Devi pls 😭",
+    "This hurts 🥺",
+    "Still no? 😵",
+    "Almost there 😬",
+    "Last chance 😐",
+    "Okay click me 😞"
+];
 
-    function moveNo() {
-         if (noUnlocked) return;
+function moveNo() {
+    if (noUnlocked) return;
 
     attempts++;
     noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
 
     const padding = 20;
 
-    const buttonRect = noBtn.getBoundingClientRect();
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    const maxX = window.innerWidth - btnWidth - padding;
+    const maxY = window.innerHeight - btnHeight - padding;
 
-    const maxX = viewportWidth - buttonRect.width - padding;
-    const maxY = viewportHeight - buttonRect.height - padding;
+    const randomX = Math.random() * maxX + padding;
+    const randomY = Math.random() * maxY + padding;
 
-    const randomX = Math.random() * (maxX - padding) + padding;
-    const randomY = Math.random() * (maxY - padding) + padding;
-
-    noBtn.style.left = `${randomX}px`;
-    noBtn.style.top = `${randomY}px`;
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+    noBtn.style.transform = "none";
 
     if (attempts >= 10) {
         noUnlocked = true;
         noBtn.style.backgroundColor = "#ffb703";
-        }
     }
+}
 
-    noBtn.addEventListener("mouseover", moveNo);
-    noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
-    noBtn.addEventListener("click", () => {
-        if (!noUnlocked) return;
+noBtn.addEventListener("click", () => {
+    if (!noUnlocked) return;
 
-        noBtn.innerText = "Caught ya 😄 I was a YES all along 💖";
-        noBtn.style.backgroundColor = "#ff4d6d";
-        noBtn.style.fontSize = "14px";
+    noBtn.innerText = "Caught ya 😄 I was a YES all along 💖";
+    noBtn.style.backgroundColor = "#ff4d6d";
+    noBtn.style.fontSize = "14px";
 
-        document.getElementById("loveSong").play();
-        confettiBlast();
+    document.getElementById("loveSong").play();
+    confettiBlast();
 
-        setTimeout(() => {
-            window.location.href = "yes.html";
-        }, 1800);
-    });
+    setTimeout(() => {
+        window.location.href = "yes.html";
+    }, 1800);
+});
 
-    /* Yes button */
-    document.getElementById("yesBtn").addEventListener("click", () => {
-        document.getElementById("loveSong").play();
-        confettiBlast();
-        setTimeout(() => {
-            window.location.href = "yes.html";
-        }, 1500);
-    });
+/* YES BUTTON */
+document.getElementById("yesBtn").addEventListener("click", () => {
+    document.getElementById("loveSong").play();
+    confettiBlast();
+    setTimeout(() => {
+        window.location.href = "yes.html";
+    }, 1500);
+});
 
-    /* Confetti */
-    function confettiBlast() {
-        for (let i = 0; i < 120; i++) {
-            const c = document.createElement("div");
-            c.className = "confetti";
-            c.style.left = Math.random() * 100 + "vw";
-            c.style.backgroundColor =
-                ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"][Math.floor(Math.random() * 4)];
-            document.body.appendChild(c);
-            setTimeout(() => c.remove(), 3000);
-        }
+/* Confetti */
+function confettiBlast() {
+    for (let i = 0; i < 120; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.backgroundColor =
+            ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"]
+            [Math.floor(Math.random() * 4)];
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
     }
+}
 </script>
 
 </body>
 </html>
-
