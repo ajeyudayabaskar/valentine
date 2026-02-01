@@ -48,7 +48,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* NO BUTTON — FIXED POSITION */
+/* NO BUTTON */
 #noBtn {
     position: fixed;
     background-color: #adb5bd;
@@ -61,7 +61,21 @@ h1 {
     left: 50%;
     top: 65%;
     transform: translate(-50%, -50%);
+    transition: left 0.25s ease, top 0.25s ease;
     z-index: 10;
+}
+
+/* Wiggle animation (end effect) */
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.wiggle {
+    animation: wiggle 0.4s infinite;
 }
 
 /* Floating hearts */
@@ -80,22 +94,6 @@ h1 {
         opacity: 0;
     }
 }
-
-/* Confetti */
-.confetti {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    top: -10px;
-    animation: fall 3s linear forwards;
-}
-
-@keyframes fall {
-    to {
-        transform: translateY(110vh) rotate(360deg);
-        opacity: 0;
-    }
-}
 </style>
 </head>
 
@@ -109,10 +107,6 @@ h1 {
 
 <button id="noBtn">No 😢</button>
 
-<audio id="loveSong">
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 /* Floating hearts */
 setInterval(() => {
@@ -124,10 +118,8 @@ setInterval(() => {
     setTimeout(() => heart.remove(), 6000);
 }, 600);
 
-/* NO BUTTON LOGIC — PERMANENTLY FIXED */
+/* NO BUTTON LOGIC */
 const noBtn = document.getElementById("noBtn");
-let attempts = 0;
-let noUnlocked = false;
 
 const texts = [
     "Are you sure? 😳",
@@ -142,73 +134,71 @@ const texts = [
     "Okay click me 😞"
 ];
 
-function moveNo() {
-    if (noUnlocked) return;
+let attempts = 0;
+let unlocked = false;
 
-    attempts++;
-    noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
+let posX = window.innerWidth / 2;
+let posY = window.innerHeight * 0.65;
 
-    const padding = 20;
+noBtn.style.left = posX + "px";
+noBtn.style.top = posY + "px";
 
-    const btnWidth = noBtn.offsetWidth;
-    const btnHeight = noBtn.offsetHeight;
+function slideAway(e) {
+    if (unlocked) return;
 
-    const maxX = window.innerWidth - btnWidth - padding;
-    const maxY = window.innerHeight - btnHeight - padding;
+    const rect = noBtn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-    const randomX = Math.random() * maxX + padding;
-    const randomY = Math.random() * maxY + padding;
+    const mouseX = e.clientX || (e.touches && e.touches[0].clientX);
+    const mouseY = e.clientY || (e.touches && e.touches[0].clientY);
+    if (!mouseX || !mouseY) return;
 
-    noBtn.style.left = randomX + "px";
-    noBtn.style.top = randomY + "px";
-    noBtn.style.transform = "none";
+    const dx = centerX - mouseX;
+    const dy = centerY - mouseY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (attempts >= 10) {
-        noUnlocked = true;
-        noBtn.style.backgroundColor = "#ffb703";
+    if (distance < 100) {
+        attempts++;
+        noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
+
+        const angle = Math.atan2(dy, dx);
+        const move = 80;
+
+        posX += Math.cos(angle) * move;
+        posY += Math.sin(angle) * move;
+
+        const padding = 20;
+        const maxX = window.innerWidth - rect.width - padding;
+        const maxY = window.innerHeight - rect.height - padding;
+
+        posX = Math.max(padding, Math.min(posX, maxX));
+        posY = Math.max(padding, Math.min(posY, maxY));
+
+        noBtn.style.left = posX + "px";
+        noBtn.style.top = posY + "px";
+
+        if (attempts >= texts.length) {
+            unlocked = true;
+            noBtn.classList.add("wiggle");
+            noBtn.style.backgroundColor = "#ffb703";
+        }
     }
 }
 
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("mousemove", slideAway);
+noBtn.addEventListener("touchmove", slideAway);
 
+/* Click after unlock */
 noBtn.addEventListener("click", () => {
-    if (!noUnlocked) return;
-
-    noBtn.innerText = "Caught ya 😄 I was a YES all along 💖";
-    noBtn.style.backgroundColor = "#ff4d6d";
-    noBtn.style.fontSize = "14px";
-
-    document.getElementById("loveSong").play();
-    confettiBlast();
-
-    setTimeout(() => {
-        window.location.href = "yes.html";
-    }, 1800);
+    if (!unlocked) return;
+    window.location.href = "yes.html";
 });
 
 /* YES BUTTON */
 document.getElementById("yesBtn").addEventListener("click", () => {
-    document.getElementById("loveSong").play();
-    confettiBlast();
-    setTimeout(() => {
-        window.location.href = "yes.html";
-    }, 1500);
+    window.location.href = "yes.html";
 });
-
-/* Confetti */
-function confettiBlast() {
-    for (let i = 0; i < 120; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random() * 100 + "vw";
-        c.style.backgroundColor =
-            ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"]
-            [Math.floor(Math.random() * 4)];
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 3000);
-    }
-}
 </script>
 
 </body>
