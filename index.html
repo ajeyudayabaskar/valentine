@@ -8,7 +8,7 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #ffe6eb, #fff0f5);
             overflow: hidden;
         }
@@ -40,7 +40,7 @@
             position: relative;
             width: 100%;
             max-width: 320px;
-            height: 160px;
+            height: 180px;
         }
 
         button {
@@ -48,8 +48,7 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            transition: 0.2s ease;
-            touch-action: manipulation;
+            transition: transform 0.15s ease;
         }
 
         #yesBtn {
@@ -58,6 +57,7 @@
             font-size: 20px;
             padding: 15px 40px;
             left: 50%;
+            top: 10px;
             transform: translateX(-60%);
         }
 
@@ -67,7 +67,7 @@
             font-size: 16px;
             padding: 10px 28px;
             left: 50%;
-            top: 70px;
+            top: 80px;
             transform: translateX(-40%);
         }
 
@@ -91,7 +91,6 @@
             position: fixed;
             width: 8px;
             height: 8px;
-            background-color: red;
             top: -10px;
             animation: fall 3s linear forwards;
         }
@@ -108,12 +107,10 @@
 <body>
 
 <div class="container">
-    <!-- You can replace this image if you want -->
     <img src="https://i.imgur.com/6xKQxjU.png" alt="Love">
-
     <h1>Devi, will you be my Valentine? 💖</h1>
 
-    <div class="buttons">
+    <div class="buttons" id="btnContainer">
         <button id="yesBtn">Yes 💘</button>
         <button id="noBtn">No 😢</button>
     </div>
@@ -125,27 +122,24 @@
 
 <script>
     /* Floating hearts */
-    function createHeart() {
+    setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
         heart.innerText = "💖";
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
         document.body.appendChild(heart);
-
         setTimeout(() => heart.remove(), 7000);
-    }
-    setInterval(createHeart, 500);
+    }, 500);
 
-    /* No button chaos */
+    /* No button – playful flee (STAYS INSIDE CONTAINER) */
     const noBtn = document.getElementById("noBtn");
+    const container = document.getElementById("btnContainer");
     let noCount = 0;
-
-    noBtn.addEventListener("mouseover", moveNo);
-    noBtn.addEventListener("touchstart", moveNo);
 
     function moveNo() {
         noCount++;
+
         const phrases = [
             "Wait 😳",
             "Are you sure?",
@@ -155,26 +149,32 @@
         ];
         noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
 
-        const maxX = window.innerWidth - noBtn.offsetWidth;
-        const maxY = window.innerHeight - noBtn.offsetHeight;
+        const containerRect = container.getBoundingClientRect();
 
-        noBtn.style.left = Math.random() * maxX + "px";
-        noBtn.style.top = Math.random() * maxY + "px";
-        noBtn.style.transform = `scale(${1 - noCount * 0.05})`;
+        const maxX = containerRect.width - noBtn.offsetWidth;
+        const maxY = containerRect.height - noBtn.offsetHeight;
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noBtn.style.left = `${randomX}px`;
+        noBtn.style.top = `${randomY}px`;
     }
 
-    /* Confetti explosion */
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    /* Confetti */
     function confettiBlast() {
         for (let i = 0; i < 120; i++) {
-            const confetti = document.createElement("div");
-            confetti.className = "confetti";
-            confetti.style.left = Math.random() * 100 + "vw";
-            confetti.style.backgroundColor =
+            const c = document.createElement("div");
+            c.className = "confetti";
+            c.style.left = Math.random() * 100 + "vw";
+            c.style.backgroundColor =
                 ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"][Math.floor(Math.random() * 4)];
-            confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
-            document.body.appendChild(confetti);
-
-            setTimeout(() => confetti.remove(), 3000);
+            c.style.animationDuration = (Math.random() * 2 + 2) + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
         }
     }
 
