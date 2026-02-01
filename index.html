@@ -118,14 +118,20 @@ setInterval(() => {
     setTimeout(() => heart.remove(), 6000);
 }, 600);
 
-/* NO BUTTON LOGIC — fixed slippery + cooldown */
+/* NO BUTTON LOGIC — slippery + messages + wiggle */
 const noBtn = document.getElementById("noBtn");
 
 const texts = [
     "Are you sure? 😳",
     "Think again 🤔",
-    "Please no 😢"
-]; // reduced to 3 slides
+    "Please no 😢",
+    "You sure sure? 💔",
+    "Devi pls 😭",
+    "This hurts 🥺",
+    "Still no? 😵",
+    "Last chance 😐",
+    "Okay click me 😞"
+];
 
 let attempts = 0;
 let unlocked = false;
@@ -177,7 +183,7 @@ function slideAway(e) {
         noBtn.style.left = posX + "px";
         noBtn.style.top = posY + "px";
 
-        // unlock after last slide
+        // unlock after last message
         if (attempts >= texts.length) {
             unlocked = true;
             noBtn.classList.add("wiggle");
