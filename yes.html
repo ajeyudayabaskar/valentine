@@ -16,26 +16,45 @@ body {
 .container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 30px;
+  padding: 25px;
 }
 
-.box {
-  max-width: 520px;
-  animation: heartbeat 1.6s ease-in-out infinite;
+h1 {
+  color: #c9184a;
+  margin-bottom: 25px;
 }
 
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-}
-
-p {
-  color: #6a040f;
+.line {
+  opacity: 0;
   font-size: 1.15rem;
-  line-height: 1.7;
+  color: #6a040f;
+  margin: 12px 0;
+  transition: opacity 1.5s ease;
+  max-width: 520px;
+}
+.show { opacity: 1; }
+
+.hint {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #9d0208;
+  opacity: 0.7;
+}
+
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 22px;
+  animation: floatUp 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  to { transform: translateY(-110vh); opacity: 0; }
 }
 </style>
 </head>
@@ -43,19 +62,38 @@ p {
 <body>
 
 <div class="container">
-  <div class="box">
-    <h1>She said YES 💖</h1>
-    <p>
-      I knew you would say Yes 😉😉😉<br><br>
-      Happy Valentines day, Devi 💝... with you around even normal days feels like a Valentines day to me 💓 and I want you to me my forever Valentine 💌💖<br><br>
-      Watch out for more presents and surprises 🎁🎁🎁
-    </p>
-  </div>
+  <h1>She said YES 💖</h1>
+
+  <div class="line">I knew you would say Yes 😉😉😉</div>
+  <div class="line">Happy Valentines day, Devi 💝... with you around even normal days feels like a Valentines day to me 💓 and I want you to me my forever Valentine 💌💖</div>
+  <div class="line">Watch out for more presents and surprises 🎁🎁🎁</div>
+
+  <div class="hint">💗 Tap anywhere</div>
 </div>
 
-<audio autoplay loop>
+<audio id="music" loop>
   <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7e32f6e3c1.mp3" type="audio/mpeg">
 </audio>
+
+<script>
+document.querySelectorAll(".line").forEach((l, i) => {
+  setTimeout(() => l.classList.add("show"), i * 2000);
+});
+
+document.body.addEventListener("click", () => {
+  const music = document.getElementById("music");
+  if (music.paused) music.play();
+}, { once: true });
+
+setInterval(() => {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 6000);
+}, 600);
+</script>
 
 </body>
 </html>
