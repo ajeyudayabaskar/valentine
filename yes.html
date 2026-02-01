@@ -18,26 +18,24 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.card {
-  background: rgba(255,255,255,0.7);
-  padding: 30px;
-  border-radius: 20px;
-  max-width: 520px;
   text-align: center;
-  animation: slideUp 1.6s ease forwards;
+  padding: 30px;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(80px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.box {
+  max-width: 520px;
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+p {
+  color: #6a040f;
+  font-size: 1.15rem;
+  line-height: 1.7;
 }
 </style>
 </head>
@@ -45,7 +43,7 @@ body {
 <body>
 
 <div class="container">
-  <div class="card">
+  <div class="box">
     <h1>She said YES 💖</h1>
     <p>
       I knew you would say Yes 😉😉😉<br><br>
