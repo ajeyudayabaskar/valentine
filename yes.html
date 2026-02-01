@@ -26,15 +26,23 @@ body {
 h1 {
     color: #c9184a;
     font-size: 2.3rem;
-    margin-bottom: 22px;
+    margin-bottom: 14px;
     animation: pulse 2.5s ease-in-out infinite;
 }
 
-/* Subtle pulse */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.04); }
     100% { transform: scale(1); }
+}
+
+/* Framing line */
+#intro {
+    font-size: 0.95rem;
+    color: #7a1c2f;
+    margin-bottom: 18px;
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
 #message {
@@ -43,7 +51,18 @@ h1 {
     max-width: 520px;
     line-height: 1.7;
     white-space: pre-line;
-    min-height: 150px;
+    min-height: 160px;
+}
+
+/* Glow emphasis */
+.glow {
+    animation: glow 2s ease-in-out;
+}
+
+@keyframes glow {
+    0% { text-shadow: none; }
+    50% { text-shadow: 0 0 10px rgba(255, 77, 109, 0.8); }
+    100% { text-shadow: none; }
 }
 
 #startBtn {
@@ -103,6 +122,21 @@ h1 {
         opacity: 0;
     }
 }
+
+/* Cursor hearts */
+.cursor-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 16px;
+    animation: fadeOut 1s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
 </style>
 </head>
 
@@ -110,6 +144,8 @@ h1 {
 
 <div class="container">
     <h1>Mission successful 💌</h1>
+
+    <div id="intro">This is something I wanted to tell you properly…</div>
 
     <div id="message"></div>
 
@@ -120,7 +156,7 @@ h1 {
 </div>
 
 <script>
-const text =
+const rawText =
 `I knew you would say Yes 😉😉😉
 
 Happy Valentines day, Devi 💝... with you around even normal days feels like a Valentines day to me 💓 and I want you to be my forever Valentine 💌💖
@@ -131,28 +167,31 @@ let index = 0;
 const speed = 40;
 const messageEl = document.getElementById("message");
 const startBtn = document.getElementById("startBtn");
+const intro = document.getElementById("intro");
 
-let heartInterval = 900; // slow at first
+let heartInterval = 900;
 let heartTimer = setInterval(createHeart, heartInterval);
 
 function typeWriter() {
-    if (index < text.length) {
-        messageEl.innerHTML += text.charAt(index);
+    if (index < rawText.length) {
+        messageEl.innerHTML += rawText.charAt(index);
         index++;
         setTimeout(typeWriter, speed);
+    } else {
+        applyGlow();
     }
 }
 
 startBtn.addEventListener("click", () => {
     startBtn.style.display = "none";
+    intro.style.opacity = 1;
     typeWriter();
 
-    // Increase hearts after message starts
     clearInterval(heartTimer);
-    heartInterval = 400;
-    heartTimer = setInterval(createHeart, heartInterval);
+    heartTimer = setInterval(createHeart, 400);
 });
 
+/* Floating hearts */
 function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
@@ -161,6 +200,40 @@ function createHeart() {
     heart.style.fontSize = (18 + Math.random() * 14) + "px";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 6000);
+}
+
+/* Cursor heart trail */
+document.addEventListener("mousemove", e => {
+    const h = document.createElement("div");
+    h.className = "cursor-heart";
+    h.innerText = "💗";
+    h.style.left = e.clientX + "px";
+    h.style.top = e.clientY + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1000);
+});
+
+/* Touch support */
+document.addEventListener("touchmove", e => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    const h = document.createElement("div");
+    h.className = "cursor-heart";
+    h.innerText = "💗";
+    h.style.left = touch.clientX + "px";
+    h.style.top = touch.clientY + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1000);
+});
+
+/* Glow important words */
+function applyGlow() {
+    const words = ["Yes", "Devi", "forever Valentine"];
+    let html = messageEl.innerHTML;
+    words.forEach(word => {
+        html = html.replace(word, `<span class="glow">${word}</span>`);
+    });
+    messageEl.innerHTML = html;
 }
 </script>
 
