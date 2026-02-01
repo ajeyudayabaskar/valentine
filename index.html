@@ -118,24 +118,18 @@ setInterval(() => {
     setTimeout(() => heart.remove(), 6000);
 }, 600);
 
-/* NO BUTTON LOGIC */
+/* NO BUTTON LOGIC — fixed slippery + cooldown */
 const noBtn = document.getElementById("noBtn");
 
 const texts = [
     "Are you sure? 😳",
     "Think again 🤔",
-    "Please no 😢",
-    "You sure sure? 💔",
-    "Devi pls 😭",
-    "This hurts 🥺",
-    "Still no? 😵",
-    "Almost there 😬",
-    "Last chance 😐",
-    "Okay click me 😞"
-];
+    "Please no 😢"
+]; // reduced to 3 slides
 
 let attempts = 0;
 let unlocked = false;
+let lastMoveTime = 0; // cooldown
 
 let posX = window.innerWidth / 2;
 let posY = window.innerHeight * 0.65;
@@ -145,6 +139,10 @@ noBtn.style.top = posY + "px";
 
 function slideAway(e) {
     if (unlocked) return;
+
+    const now = Date.now();
+    if (now - lastMoveTime < 350) return; // 350ms cooldown
+    lastMoveTime = now;
 
     const rect = noBtn.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -156,11 +154,12 @@ function slideAway(e) {
 
     const dx = centerX - mouseX;
     const dy = centerY - mouseY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx*dx + dy*dy);
 
     if (distance < 100) {
+        // update text
+        noBtn.innerText = texts[Math.min(attempts, texts.length-1)];
         attempts++;
-        noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
 
         const angle = Math.atan2(dy, dx);
         const move = 80;
@@ -178,6 +177,7 @@ function slideAway(e) {
         noBtn.style.left = posX + "px";
         noBtn.style.top = posY + "px";
 
+        // unlock after last slide
         if (attempts >= texts.length) {
             unlocked = true;
             noBtn.classList.add("wiggle");
@@ -186,8 +186,8 @@ function slideAway(e) {
     }
 }
 
-noBtn.addEventListener("mousemove", slideAway);
-noBtn.addEventListener("touchmove", slideAway);
+document.addEventListener("mousemove", slideAway);
+document.addEventListener("touchmove", slideAway);
 
 /* Click after unlock */
 noBtn.addEventListener("click", () => {
