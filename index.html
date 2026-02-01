@@ -61,7 +61,6 @@ h1 {
     left: 50%;
     top: 65%;
     transform: translate(-50%, -50%);
-    transition: left 0.25s ease, top 0.25s ease;
     z-index: 10;
 }
 
@@ -118,7 +117,7 @@ setInterval(() => {
     setTimeout(() => heart.remove(), 6000);
 }, 600);
 
-/* NO BUTTON LOGIC — slippery + messages + wiggle */
+/* NO BUTTON LOGIC — slippery eel with twist */
 const noBtn = document.getElementById("noBtn");
 
 const texts = [
@@ -139,15 +138,36 @@ let lastMoveTime = 0; // cooldown
 
 let posX = window.innerWidth / 2;
 let posY = window.innerHeight * 0.65;
+let targetX = posX;
+let targetY = posY;
+const ease = 0.15;
+let oscillation = 0;
 
 noBtn.style.left = posX + "px";
 noBtn.style.top = posY + "px";
+
+// Animate No button with twist
+function animateNo() {
+    oscillation += 0.2; // controls twist frequency
+
+    const offsetX = Math.cos(oscillation) * 10; // perpendicular offset
+    const offsetY = Math.sin(oscillation) * 5;
+
+    posX += (targetX - posX) * ease;
+    posY += (targetY - posY) * ease;
+
+    noBtn.style.left = posX + offsetX + "px";
+    noBtn.style.top = posY + offsetY + "px";
+
+    requestAnimationFrame(animateNo);
+}
+animateNo();
 
 function slideAway(e) {
     if (unlocked) return;
 
     const now = Date.now();
-    if (now - lastMoveTime < 350) return; // 350ms cooldown
+    if (now - lastMoveTime < 350) return;
     lastMoveTime = now;
 
     const rect = noBtn.getBoundingClientRect();
@@ -168,22 +188,18 @@ function slideAway(e) {
         attempts++;
 
         const angle = Math.atan2(dy, dx);
-        const move = 80;
+        const move = 120;
 
-        posX += Math.cos(angle) * move;
-        posY += Math.sin(angle) * move;
+        targetX += Math.cos(angle) * move;
+        targetY += Math.sin(angle) * move;
 
         const padding = 20;
         const maxX = window.innerWidth - rect.width - padding;
         const maxY = window.innerHeight - rect.height - padding;
 
-        posX = Math.max(padding, Math.min(posX, maxX));
-        posY = Math.max(padding, Math.min(posY, maxY));
+        targetX = Math.max(padding, Math.min(targetX, maxX));
+        targetY = Math.max(padding, Math.min(targetY, maxY));
 
-        noBtn.style.left = posX + "px";
-        noBtn.style.top = posY + "px";
-
-        // unlock after last message
         if (attempts >= texts.length) {
             unlocked = true;
             noBtn.classList.add("wiggle");
