@@ -40,7 +40,7 @@
             position: relative;
             width: 100%;
             max-width: 320px;
-            height: 180px;
+            height: 160px;
         }
 
         button {
@@ -48,6 +48,7 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
+            padding: 14px 36px;
             transition: transform 0.15s ease;
         }
 
@@ -55,7 +56,6 @@
             background-color: #ff4d6d;
             color: white;
             font-size: 20px;
-            padding: 15px 40px;
             left: 50%;
             top: 10px;
             transform: translateX(-60%);
@@ -65,13 +65,25 @@
             background-color: #adb5bd;
             color: white;
             font-size: 16px;
-            padding: 10px 28px;
             left: 50%;
             top: 80px;
             transform: translateX(-40%);
         }
 
-        /* Floating hearts */
+        /* Shake animation */
+        .shake {
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(-40%) translateX(0); }
+            25% { transform: translateX(-40%) translateX(-6px); }
+            50% { transform: translateX(-40%) translateX(6px); }
+            75% { transform: translateX(-40%) translateX(-4px); }
+            100% { transform: translateX(-40%) translateX(0); }
+        }
+
+        /* Hearts */
         .heart {
             position: fixed;
             bottom: -20px;
@@ -82,8 +94,10 @@
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-110vh); opacity: 0; }
+            to {
+                transform: translateY(-110vh);
+                opacity: 0;
+            }
         }
 
         /* Confetti */
@@ -110,7 +124,7 @@
     <img src="https://i.imgur.com/6xKQxjU.png" alt="Love">
     <h1>Devi, will you be my Valentine? 💖</h1>
 
-    <div class="buttons" id="btnContainer">
+    <div class="buttons">
         <button id="yesBtn">Yes 💘</button>
         <button id="noBtn">No 😢</button>
     </div>
@@ -127,42 +141,68 @@
         heart.className = "heart";
         heart.innerText = "💖";
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
         document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 7000);
-    }, 500);
+        setTimeout(() => heart.remove(), 6000);
+    }, 600);
 
-    /* No button – playful flee (STAYS INSIDE CONTAINER) */
+    /* No button logic */
     const noBtn = document.getElementById("noBtn");
-    const container = document.getElementById("btnContainer");
-    let noCount = 0;
+    let attempts = 0;
+    let noUnlocked = false;
 
-    function moveNo() {
-        noCount++;
+    const texts = [
+        "Are you sure? 😳",
+        "Think again 🤔",
+        "Please no 😢",
+        "You sure sure? 💔",
+        "Devi pls 😭",
+        "This hurts 🥺",
+        "Still no? 😵",
+        "Last chance 😶",
+        "Okay… one more 😬",
+        "Fine 😐"
+    ];
 
-        const phrases = [
-            "Wait 😳",
-            "Are you sure?",
-            "Pls no 😢",
-            "Think again 💔",
-            "Devi pls 😭"
-        ];
-        noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
+    noBtn.addEventListener("mouseover", () => {
+        if (noUnlocked) return;
 
-        const containerRect = container.getBoundingClientRect();
+        attempts++;
+        noBtn.innerText = texts[Math.min(attempts - 1, texts.length - 1)];
 
-        const maxX = containerRect.width - noBtn.offsetWidth;
-        const maxY = containerRect.height - noBtn.offsetHeight;
+        noBtn.classList.remove("shake");
+        void noBtn.offsetWidth; // restart animation
+        noBtn.classList.add("shake");
 
-        const randomX = Math.random() * maxX;
-        const randomY = Math.random() * maxY;
+        if (attempts >= 10) {
+            noUnlocked = true;
+            noBtn.innerText = "Okay click me 🙈";
+            noBtn.style.backgroundColor = "#ffb703";
+        }
+    });
 
-        noBtn.style.left = `${randomX}px`;
-        noBtn.style.top = `${randomY}px`;
-    }
+    noBtn.addEventListener("click", () => {
+        if (!noUnlocked) return;
 
-    noBtn.addEventListener("mouseover", moveNo);
-    noBtn.addEventListener("touchstart", moveNo);
+        noBtn.innerText = "Caught ya 😄 I was a YES all along 💖";
+        noBtn.style.backgroundColor = "#ff4d6d";
+        noBtn.style.fontSize = "14px";
+
+        document.getElementById("loveSong").play();
+        confettiBlast();
+
+        setTimeout(() => {
+            window.location.href = "yes.html";
+        }, 1800);
+    });
+
+    /* Yes button */
+    document.getElementById("yesBtn").addEventListener("click", () => {
+        document.getElementById("loveSong").play();
+        confettiBlast();
+        setTimeout(() => {
+            window.location.href = "yes.html";
+        }, 1500);
+    });
 
     /* Confetti */
     function confettiBlast() {
@@ -172,21 +212,10 @@
             c.style.left = Math.random() * 100 + "vw";
             c.style.backgroundColor =
                 ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"][Math.floor(Math.random() * 4)];
-            c.style.animationDuration = (Math.random() * 2 + 2) + "s";
             document.body.appendChild(c);
             setTimeout(() => c.remove(), 3000);
         }
     }
-
-    /* Yes button */
-    document.getElementById("yesBtn").addEventListener("click", () => {
-        document.getElementById("loveSong").play();
-        confettiBlast();
-
-        setTimeout(() => {
-            window.location.href = "yes.html";
-        }, 1500);
-    });
 </script>
 
 </body>
