@@ -7,54 +7,68 @@
 
 <style>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ffccd5, #ffe6eb);
-  overflow: hidden;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffccd5, #ffe6eb);
+    overflow: hidden;
 }
 
 .container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 25px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
 }
 
 h1 {
-  color: #c9184a;
-  margin-bottom: 25px;
+    color: #c9184a;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
 }
 
-.line {
-  opacity: 0;
-  font-size: 1.15rem;
-  color: #6a040f;
-  margin: 12px 0;
-  transition: opacity 1.5s ease;
-  max-width: 520px;
-}
-.show { opacity: 1; }
-
-.hint {
-  margin-top: 30px;
-  font-size: 0.9rem;
-  color: #9d0208;
-  opacity: 0.7;
+#message {
+    font-size: 1.15rem;
+    color: #6a040f;
+    max-width: 520px;
+    line-height: 1.7;
+    white-space: pre-line;
+    min-height: 140px;
 }
 
+#playBtn {
+    margin-top: 30px;
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 34px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#playBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Floating hearts */
 .heart {
-  position: fixed;
-  bottom: -20px;
-  font-size: 22px;
-  animation: floatUp 6s linear infinite;
-  pointer-events: none;
+    position: fixed;
+    bottom: -20px;
+    font-size: 22px;
+    animation: floatUp 6s linear infinite;
+    opacity: 0.9;
+    pointer-events: none;
 }
 
 @keyframes floatUp {
-  to { transform: translateY(-110vh); opacity: 0; }
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
 }
 </style>
 </head>
@@ -62,36 +76,56 @@ h1 {
 <body>
 
 <div class="container">
-  <h1>She said YES 💖</h1>
+    <h1>She said YES 💖</h1>
+    <div id="message"></div>
 
-  <div class="line">I knew you would say Yes 😉😉😉</div>
-  <div class="line">Happy Valentines day, Devi 💝... with you around even normal days feels like a Valentines day to me 💓 and I want you to me my forever Valentine 💌💖</div>
-  <div class="line">Watch out for more presents and surprises 🎁🎁🎁</div>
-
-  <div class="hint">💗 Tap anywhere</div>
+    <button id="playBtn">Play the magic 💕</button>
 </div>
 
 <audio id="music" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7e32f6e3c1.mp3" type="audio/mpeg">
+    <!-- Soft romantic piano -->
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7e32f6e3c1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-document.querySelectorAll(".line").forEach((l, i) => {
-  setTimeout(() => l.classList.add("show"), i * 2000);
+/* Typewriter text (CORRECTED LINE) */
+const text =
+`I knew you would say Yes 😉😉😉
+
+Happy Valentines day, Devi 💝... with you around even normal days feels like a Valentines day to me 💓 and I want you to be my forever Valentine 💌💖
+
+Watch out for more presents and surprises 🎁🎁🎁`;
+
+let index = 0;
+const speed = 40;
+const messageEl = document.getElementById("message");
+
+function typeWriter() {
+    if (index < text.length) {
+        messageEl.innerHTML += text.charAt(index);
+        index++;
+        setTimeout(typeWriter, speed);
+    }
+}
+typeWriter();
+
+/* Music — GUARANTEED PLAY */
+const playBtn = document.getElementById("playBtn");
+const music = document.getElementById("music");
+
+playBtn.addEventListener("click", () => {
+    music.play();
+    playBtn.style.display = "none";
 });
 
-document.body.addEventListener("click", () => {
-  const music = document.getElementById("music");
-  if (music.paused) music.play();
-}, { once: true });
-
+/* Floating hearts */
 setInterval(() => {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerText = "💖";
-  h.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 6000);
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
 }, 600);
 </script>
 
